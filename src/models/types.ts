@@ -6,7 +6,28 @@ export type ShiftType = 'Day' | 'Night';
 
 // Change from strict literal types to string to allow for dynamic values from settings
 export type JobCategory = string;
+// Legacy flat Department type
 export type Department = string;
+
+// New hierarchical location types
+export interface Building {
+  id: string;
+  name: string;
+  departments: LocationItem[];
+  wards: LocationItem[];
+}
+
+export interface LocationItem {
+  id: string;
+  name: string;
+}
+
+export interface Location {
+  id: string;
+  buildingId: string;
+  name: string;
+  type: 'department' | 'ward';
+}
 export type ItemType = string;
 export type StaffMember = string;
 

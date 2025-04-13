@@ -177,6 +177,26 @@
           </div>
         </div>
       </div>
+      
+      <!-- Buildings, Wards and Departments -->
+      <div class="settings-section">
+        <h3>
+          <span>Buildings & Locations</span>
+        </h3>
+        
+        <p class="section-description">
+          Hierarchical structure of buildings, wards, and departments available in the task form.
+        </p>
+        
+        <div class="info-box">
+          <p>This new hierarchical structure allows for better organization of locations:</p>
+          <ul>
+            <li>Buildings can contain both wards and departments</li>
+            <li>The system will automatically maintain backward compatibility</li>
+            <li>Existing tasks will be mapped to the new structure</li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <!-- Save and Cancel Buttons -->
@@ -241,9 +261,9 @@
         
         <div class="modal-body">
           <div class="form-group">
-            <label :for="newItemType">Name</label>
+            <label :for="'new-item-input'">Name</label>
             <input 
-              :id="newItemType" 
+              id="new-item-input" 
               type="text" 
               v-model="newItemName" 
               required 
@@ -284,8 +304,13 @@ interface AppSettings {
   itemTypes: ItemTypes;
   departments: string[];
   staff: string[];
+  locations?: {
+    buildings: Building[];
+  };
   [key: string]: any;
 }
+
+import type { Building, LocationItem } from '../models/types';
 
 // Navigation
 type NavigateFn = (route: string, params?: RouteParams) => void;
@@ -339,8 +364,8 @@ const newItemTypeName = ref('');
 
 // Modal state for adding new items (categories, departments, staff)
 const showNewItemModal = ref(false);
-const newItemType = ref('');
-const newItemName = ref('');
+const newItemType = ref<string>('');
+const newItemName = ref<string>('');
 
 // Computed modal title based on item type being added
 const newItemModalTitle = computed(() => {
@@ -484,8 +509,9 @@ function addNewItemType() {
 }
 
 // Remove an item from an array setting
-function removeItem(settingKey: string, index: number) {
-  if (index >= 0 && index < settings[settingKey].length) {
+function removeItem(settingKey: keyof AppSettings, index: number) {
+  const settingArray = settings[settingKey] as unknown as any[];
+  if (index >= 0 && index < settingArray.length) {
     
     // Special handling for job categories - also remove associated item types
     if (settingKey === 'jobCategories') {
@@ -496,7 +522,7 @@ function removeItem(settingKey: string, index: number) {
     }
     
     // Remove the item
-    settings[settingKey].splice(index, 1);
+    settingArray.splice(index, 1);
     settingsChanged.value = true;
   }
 }
@@ -543,6 +569,34 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.section-description {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.info-box {
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  
+  p {
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  ul {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+    
+    li {
+      margin-bottom: var(--spacing-xs);
+      font-size: var(--font-size-sm);
+    }
+  }
+}
+
 .settings-screen {
   max-width: 900px;
   margin: 0 auto;

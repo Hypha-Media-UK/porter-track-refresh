@@ -73,36 +73,90 @@
         <div class="form-section">
           <h3>Location</h3>
           
-          <!-- From Department -->
-          <div class="form-group">
-            <label for="fromDepartment">From Department</label>
-            <select 
-              id="fromDepartment" 
-              v-model="formData.fromDepartment" 
-              required
-              :disabled="isEditing && task?.status === 'Completed' && !isFromArchive"
-            >
-              <option value="" disabled>Select Department</option>
-              <option v-for="dept in departments" :key="dept" :value="dept">
-                {{ dept }}
-              </option>
-            </select>
+          <!-- From Location -->
+          <div class="form-group location-group">
+            <label>From Location</label>
+            <div class="location-selects">
+              <!-- From Location (Department/Ward) - Main selection -->
+              <select 
+                id="fromLocation" 
+                v-model="formData.fromLocation" 
+                @change="updateFromDepartment"
+                required
+              >
+                <option value="" disabled>Select Ward or Department</option>
+                <optgroup v-for="building in buildings" :key="building.id" :label="building.name">
+                  <!-- Departments in this building -->
+                  <option 
+                    v-for="dept in building.departments" 
+                    :key="`dept-${dept.id}`" 
+                    :value="`department:${dept.id}|${building.id}`"
+                  >
+                    {{ dept.name }}
+                  </option>
+                  
+                  <!-- Wards in this building -->
+                  <option 
+                    v-for="ward in building.wards" 
+                    :key="`ward-${ward.id}`" 
+                    :value="`ward:${ward.id}|${building.id}`"
+                  >
+                    ⟡ {{ ward.name }}
+                  </option>
+                </optgroup>
+              </select>
+              
+              <!-- Building display (read-only) -->
+              <div class="building-display" v-if="formData.fromBuilding">
+                {{ getBuildingName(formData.fromBuilding) }}
+              </div>
+              <div class="building-display empty" v-else>
+                Building
+              </div>
+            </div>
           </div>
           
-          <!-- To Department -->
-          <div class="form-group">
-            <label for="toDepartment">To Department</label>
-            <select 
-              id="toDepartment" 
-              v-model="formData.toDepartment" 
-              required
-              :disabled="isEditing && task?.status === 'Completed'"
-            >
-              <option value="" disabled>Select Department</option>
-              <option v-for="dept in departments" :key="dept" :value="dept">
-                {{ dept }}
-              </option>
-            </select>
+          <!-- To Location -->
+          <div class="form-group location-group">
+            <label>To Location</label>
+            <div class="location-selects">
+              <!-- To Location (Department/Ward) - Main selection -->
+              <select 
+                id="toLocation" 
+                v-model="formData.toLocation" 
+                @change="updateToDepartment"
+                required
+              >
+                <option value="" disabled>Select Ward or Department</option>
+                <optgroup v-for="building in buildings" :key="building.id" :label="building.name">
+                  <!-- Departments in this building -->
+                  <option 
+                    v-for="dept in building.departments" 
+                    :key="`dept-${dept.id}`" 
+                    :value="`department:${dept.id}|${building.id}`"
+                  >
+                    {{ dept.name }}
+                  </option>
+                  
+                  <!-- Wards in this building -->
+                  <option 
+                    v-for="ward in building.wards" 
+                    :key="`ward-${ward.id}`" 
+                    :value="`ward:${ward.id}|${building.id}`"
+                  >
+                    ⟡ {{ ward.name }}
+                  </option>
+                </optgroup>
+              </select>
+              
+              <!-- Building display (read-only) -->
+              <div class="building-display" v-if="formData.toBuilding">
+                {{ getBuildingName(formData.toBuilding) }}
+              </div>
+              <div class="building-display empty" v-else>
+                Building
+              </div>
+            </div>
           </div>
         </div>
         
@@ -260,7 +314,7 @@ const { getTask, addTask, updateTask, setTaskStatus, currentShift, completedShif
 // Settings storage key
 const SETTINGS_STORAGE_KEY = 'porter-track-settings';
 
-// Default settings
+// Default settings with hierarchical locations
 const defaultSettings = {
   jobCategories: ['Patient Transfer', 'Samples', 'Asset Movement', 'Gases', 'Ad Hoc'],
   itemTypes: {
@@ -270,17 +324,148 @@ const defaultSettings = {
     'Asset Movement': ['Equipment'],
     'Ad Hoc': ['Other']
   },
+  // Legacy flat departments (for backward compatibility)
   departments: ['AMU', 'IAU', 'A+E', 'NICU', 'Ward 27', 'Pathology'],
-  staff: ['Porter 1', 'Porter 2', 'Porter 3', 'Porter 4', 'Porter 5']
+  staff: ['Porter 1', 'Porter 2', 'Porter 3', 'Porter 4', 'Porter 5'],
+  // New hierarchical structure
+  locations: {
+    buildings: [
+      {
+        id: 'hartshead',
+        name: 'Hartshead Building',
+        departments: [
+          { id: 'ae', name: 'A+E (ED)' },
+          { id: 'lgf-xray', name: 'LGF XRAY' },
+          { id: 'lgf-ct', name: 'LGF CT' },
+          { id: 'amu', name: 'AMU' },
+          { id: 'iau', name: 'IAU' },
+          { id: 'isgu', name: 'ISGU' },
+          { id: 'itu', name: 'ITU' },
+          { id: 'acu', name: 'ACU' },
+          { id: 'nicu', name: 'NICU' },
+          { id: 'eou', name: 'EOU' },
+          { id: 'pou', name: 'POU' },
+          { id: 'sdec', name: 'SDEC' },
+          { id: 'gf-xray', name: 'GF XRAY' },
+          { id: 'ultrasound', name: 'Ultrasound' },
+          { id: 'theatres-north', name: 'Theatres North' },
+          { id: 'theatres-south', name: 'Theatres South' },
+          { id: 'childrens-unit', name: 'Childrens Unit' },
+          { id: 'childrens-outpatients', name: 'Childrens Outpatients' },
+          { id: 'dseu', name: 'DSEU' },
+          { id: 'surgical-hub', name: 'Surgical Hub' },
+          { id: 'vascular-studies', name: 'Vascular Studies' },
+          { id: 'plaster-room', name: 'Plaster Room' },
+          { id: 'pharmacy', name: 'Pharmacy' },
+          { id: 'respiratory-clinic', name: 'Respiratory Clinic' },
+          { id: 'blue-clinic-1', name: 'Blue Clinic 1' },
+          { id: 'blue-clinic-2', name: 'Blue Clinic 2' },
+          { id: 'blue-clinic-3', name: 'Blue Clinic 3' },
+          { id: 'blue-clinic-4', name: 'Blue Clinic 4' },
+          { id: 'blue-clinic-5', name: 'Blue Clinic 5' },
+          { id: 'blue-clinic-6', name: 'Blue Clinic 6' },
+          { id: 'yellow-clinic-1', name: 'Yellow Clinic 1' },
+          { id: 'yellow-clinic-2', name: 'Yellow Clinic 2' },
+          { id: 'yellow-clinic-3', name: 'Yellow Clinic 3' },
+          { id: 'yellow-clinic-4', name: 'Yellow Clinic 4' }
+        ],
+        wards: []
+      },
+      {
+        id: 'ladysmith',
+        name: 'Ladysmith Building',
+        departments: [
+          { id: 'xray', name: 'XRAY' },
+          { id: 'macmillan', name: 'Macmillan' }
+        ],
+        wards: [
+          { id: 'ward-40', name: 'Ward 40' },
+          { id: 'ward-41', name: 'Ward 41' },
+          { id: 'ward-42', name: 'Ward 42' },
+          { id: 'ward-43', name: 'Ward 43' },
+          { id: 'ward-44', name: 'Ward 44' },
+          { id: 'ward-46', name: 'Ward 46' }
+        ]
+      },
+      {
+        id: 'charlesworth',
+        name: 'Charlesworth Building',
+        departments: [
+          { id: 'nicu', name: 'NICU' },
+          { id: 'maternity-triage', name: 'Maternity Triage' },
+          { id: 'cds', name: 'CDS' }
+        ],
+        wards: [
+          { id: 'ward-27', name: 'Ward 27' },
+          { id: 'ward-31', name: 'Ward 31' },
+          { id: 'ward-30', name: 'Ward 30 (HCU)' },
+          { id: 'labour-ward', name: 'Labour Ward' }
+        ]
+      },
+      {
+        id: 'etherow',
+        name: 'Etherow Building',
+        departments: [],
+        wards: [
+          { id: 'taylor', name: 'Taylor' },
+          { id: 'hague', name: 'Hague' }
+        ]
+      },
+      {
+        id: 'buckton',
+        name: 'Buckton Building',
+        departments: [],
+        wards: [
+          { id: 'taylor', name: 'Taylor' },
+          { id: 'hague', name: 'Hague' }
+        ]
+      },
+      {
+        id: 'astley',
+        name: 'Astley House',
+        departments: [
+          { id: 'bed-store', name: 'Bed Store' }
+        ],
+        wards: []
+      },
+      {
+        id: 'werneth',
+        name: 'Werneth House',
+        departments: [
+          { id: 'library', name: 'Library' },
+          { id: 'lecture-theatre', name: 'Lecture Theatre' }
+        ],
+        wards: []
+      },
+      {
+        id: 'annexes',
+        name: 'Annexes',
+        departments: [
+          { id: 'stores', name: 'Stores' },
+          { id: 'pathology', name: 'Pathology' },
+          { id: 'rose-cottage', name: 'Rose Cottage' },
+          { id: 'coroners', name: 'Coroners' },
+          { id: 'kitchen', name: 'Kitchen' },
+          { id: 'astley-house', name: 'Astley House' }
+        ],
+        wards: []
+      }
+    ]
+  }
 };
 
 // Load settings from localStorage with proper typing
 interface AppSettings {
   jobCategories: string[];
   itemTypes: { [category: string]: string[] };
-  departments: string[];
+  departments: string[]; // Legacy flat departments
   staff: string[];
+  locations: {
+    buildings: Building[];
+  };
 }
+
+import type { Building, LocationItem, Location } from '../models/types';
 
 const settingsData = loadFromLocalStorage(SETTINGS_STORAGE_KEY, defaultSettings) as AppSettings;
 
@@ -297,8 +482,14 @@ const task = ref<Task | undefined>(undefined);
 const formData = ref({
   receivedTime: '',
   jobCategory: '' as JobCategory,
+  // Keep the legacy fields for backward compatibility
   fromDepartment: '' as Department,
   toDepartment: '' as Department,
+  // New hierarchical location fields
+  fromBuilding: '',
+  fromLocation: '',
+  toBuilding: '',
+  toLocation: '',
   itemType: '' as ItemType,
   allocatedStaff: '' as StaffMember | '',
   allocatedTime: '',
@@ -309,6 +500,195 @@ const availableItemTypes = ref<ItemType[]>([]);
 const timeOptions = ref<string[]>([]);
 const isFormSubmitting = ref(false);
 const currentTimeStr = ref(formatTime(new Date()));
+
+// Hierarchical location state
+const fromLocationOptions = ref<{id: string, name: string, type: 'department' | 'ward'}[]>([]);
+const toLocationOptions = ref<{id: string, name: string, type: 'department' | 'ward'}[]>([]);
+
+// Get buildings from settings - with fallback for backward compatibility
+const buildings = computed(() => {
+  // Log settings data to diagnose any issues
+  console.log("Settings data for buildings:", settingsData);
+  
+  // Make sure we have the locations structure
+  if (!settingsData.locations || !Array.isArray(settingsData.locations.buildings) || settingsData.locations.buildings.length === 0) {
+    console.warn("No buildings found in settings, using default");
+    return defaultSettings.locations.buildings;
+  }
+  
+  return settingsData.locations.buildings;
+});
+
+// Get the building name for display
+const getBuildingName = (buildingId: string): string => {
+  const building = buildings.value.find(b => b.id === buildingId);
+  return building ? building.name : '';
+};
+
+// Process location selection with format: "type:id|buildingId"
+const parseLocationSelection = (selection: string) => {
+  if (!selection) return { type: '', id: '', buildingId: '' };
+  
+  // Check if it's the new format with building ID
+  if (selection.includes('|')) {
+    const [typeAndId, buildingId] = selection.split('|');
+    const [type, id] = typeAndId.split(':');
+    return { type, id, buildingId };
+  } 
+  
+  // Legacy format without building ID
+  const [type, id] = selection.split(':');
+  return { type, id, buildingId: '' };
+};
+
+// Update location options based on selected building
+const updateFromLocationOptions = () => {
+  const buildingId = formData.value.fromBuilding;
+  if (!buildingId) {
+    fromLocationOptions.value = [];
+    return;
+  }
+
+  const building = buildings.value.find(b => b.id === buildingId);
+  if (building) {
+    // Combine departments and wards with type indicator
+    fromLocationOptions.value = [
+      ...building.departments.map(d => ({ ...d, type: 'department' as const })),
+      ...building.wards.map(w => ({ ...w, type: 'ward' as const }))
+    ];
+  } else {
+    fromLocationOptions.value = [];
+  }
+};
+
+const updateToLocationOptions = () => {
+  const buildingId = formData.value.toBuilding;
+  if (!buildingId) {
+    toLocationOptions.value = [];
+    return;
+  }
+
+  const building = buildings.value.find(b => b.id === buildingId);
+  if (building) {
+    // Combine departments and wards with type indicator
+    toLocationOptions.value = [
+      ...building.departments.map(d => ({ ...d, type: 'department' as const })),
+      ...building.wards.map(w => ({ ...w, type: 'ward' as const }))
+    ];
+  } else {
+    toLocationOptions.value = [];
+  }
+};
+
+// Update legacy department fields based on hierarchical selection
+const updateFromDepartment = () => {
+  if (!formData.value.fromLocation) return;
+  
+  // Parse the location selection which now has format "type:id|buildingId"
+  const parsedLocation = parseLocationSelection(formData.value.fromLocation);
+  
+  // Set the building ID from the parsed location
+  formData.value.fromBuilding = parsedLocation.buildingId;
+  
+  // Find the building
+  const building = buildings.value.find(b => b.id === parsedLocation.buildingId);
+  if (!building) return;
+  
+  // Find the location item (department or ward)
+  let locationItem;
+  if (parsedLocation.type === 'department') {
+    locationItem = building.departments.find(d => d.id === parsedLocation.id);
+  } else if (parsedLocation.type === 'ward') {
+    locationItem = building.wards.find(w => w.id === parsedLocation.id);
+  }
+  
+  if (locationItem) {
+    // Format: "Building Name - Location Name"
+    formData.value.fromDepartment = `${building.name} - ${locationItem.name}`;
+  }
+};
+
+const updateToDepartment = () => {
+  if (!formData.value.toLocation) return;
+  
+  // Parse the location selection which now has format "type:id|buildingId"
+  const parsedLocation = parseLocationSelection(formData.value.toLocation);
+  
+  // Set the building ID from the parsed location
+  formData.value.toBuilding = parsedLocation.buildingId;
+  
+  // Find the building
+  const building = buildings.value.find(b => b.id === parsedLocation.buildingId);
+  if (!building) return;
+  
+  // Find the location item (department or ward)
+  let locationItem;
+  if (parsedLocation.type === 'department') {
+    locationItem = building.departments.find(d => d.id === parsedLocation.id);
+  } else if (parsedLocation.type === 'ward') {
+    locationItem = building.wards.find(w => w.id === parsedLocation.id);
+  }
+  
+  if (locationItem) {
+    // Format: "Building Name - Location Name"
+    formData.value.toDepartment = `${building.name} - ${locationItem.name}`;
+  }
+};
+
+// Try to map legacy department to hierarchical selection
+const mapLegacyToHierarchical = () => {
+  if (!isEditing.value || !task.value) return;
+  
+  // Try to match from department
+  const fromDept = task.value.fromDepartment;
+  for (const building of buildings.value) {
+    // Check if the department name contains the building name or vice versa
+    if (fromDept.includes(building.name) || building.name.includes(fromDept)) {
+      formData.value.fromBuilding = building.id;
+      
+      // Try to find matching department or ward
+      const matchedDept = building.departments.find(d => 
+        fromDept.includes(d.name) || d.name.includes(fromDept)
+      );
+      if (matchedDept) {
+        formData.value.fromLocation = `department:${matchedDept.id}|${building.id}`;
+        continue;
+      }
+      
+      const matchedWard = building.wards.find(w => 
+        fromDept.includes(w.name) || w.name.includes(fromDept)
+      );
+      if (matchedWard) {
+        formData.value.fromLocation = `ward:${matchedWard.id}|${building.id}`;
+      }
+    }
+  }
+  
+  // Try to match to department
+  const toDept = task.value.toDepartment;
+  for (const building of buildings.value) {
+    // Check if the department name contains the building name or vice versa
+    if (toDept.includes(building.name) || building.name.includes(toDept)) {
+      formData.value.toBuilding = building.id;
+      
+      // Try to find matching department or ward
+      const matchedDept = building.departments.find(d => 
+        toDept.includes(d.name) || d.name.includes(toDept)
+      );
+      if (matchedDept) {
+        formData.value.toLocation = `department:${matchedDept.id}|${building.id}`;
+        continue;
+      }
+      
+      const matchedWard = building.wards.find(w => 
+        toDept.includes(w.name) || w.name.includes(toDept)
+      );
+      if (matchedWard) {
+        formData.value.toLocation = `ward:${matchedWard.id}|${building.id}`;
+      }
+    }
+  }
+};
 
 // Computed properties
 const isEditing = computed(() => !!props.taskId);
@@ -432,6 +812,9 @@ const initializeForm = () => {
       
       // Resort time options
       timeOptions.value.sort();
+      
+      // Try to map legacy departments to hierarchical structure
+      mapLegacyToHierarchical();
     }
   } else {
     // Set defaults for new task
@@ -854,6 +1237,110 @@ onMounted(() => {
       animation: none;
       transform: translateY(0) translateX(-50%);
     }
+  }
+}
+
+/* Hierarchical location selectors styling */
+.location-group {
+  .location-selects {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    
+    .building-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--color-background);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-sm);
+      color: var(--color-text);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      
+      &.empty {
+        color: var(--color-text-light);
+        font-style: italic;
+      }
+    }
+  }
+  
+  .legacy-field {
+    margin-top: var(--spacing-sm);
+    position: relative;
+    
+    &::before {
+      content: 'Legacy Format';
+      position: absolute;
+      top: -20px;
+      left: 0;
+      font-size: 11px;
+      color: var(--color-text-light);
+      background-color: rgba(0, 0, 0, 0.05);
+      padding: 2px 6px;
+      border-radius: var(--border-radius-pill);
+    }
+  }
+}
+
+.form-toggle {
+  display: flex;
+  align-items: center;
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-border-light);
+  
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    margin-right: var(--spacing-sm);
+    
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      
+      &:checked + .toggle-slider {
+        background-color: var(--color-primary);
+      }
+      
+      &:checked + .toggle-slider:before {
+        transform: translateX(16px);
+      }
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--color-border);
+      transition: .3s;
+      border-radius: 20px;
+      
+      &:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: .3s;
+        border-radius: 50%;
+      }
+    }
+  }
+  
+  .toggle-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
   }
 }
 </style>
