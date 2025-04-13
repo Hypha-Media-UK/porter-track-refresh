@@ -1,0 +1,33 @@
+{
+  "id": "m9fn2k94lg14d6ttn2l",
+  "date": "2025-04-13",
+  "type": "Day",
+  "supervisor": "Supervisor 1",
+  "startTime": "2025-04-13T12:46:34.504Z",
+  "tasks": [
+    {
+      "receivedTime": "2025-04-13T12:48:00.000Z",
+      "jobCategory": "Asset Movement",
+      "fromDepartment": "IAU",
+      "toDepartment": "AMU",
+      "itemType": "Mattress",
+      "allocatedStaff": "Porter 2",
+      "allocatedTime": "2025-04-13T12:49:00.000Z",
+      "id": "m9fnu9z48fyble0y3wd",
+      "status": "Pending"
+    },
+    {
+      "receivedTime": "2025-04-13T13:08:00.000Z",
+      "jobCategory": "Patient Transfer",
+      "fromDepartment": "AMU",
+      "toDepartment": "NICU",
+      "itemType": "Bed",
+      "allocatedStaff": "Porter 4",
+      "allocatedTime": "2025-04-13T13:09:00.000Z",
+      "completedTime": "2025-04-13T13:25:00.000Z",
+      "id": "m9fnuu957udlky1qe5g",
+      "status": "Completed"
+    }
+  ],
+  "endTime": "2025-04-13T13:09:06.557Z"
+}

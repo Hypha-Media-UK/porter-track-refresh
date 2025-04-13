@@ -1,0 +1,22 @@
+{
+  "id": "m9e86ikgt9i38l5fwy",
+  "date": "2025-04-12",
+  "type": "Day",
+  "supervisor": "Supervisor 2",
+  "startTime": "2025-04-12T13:01:58.529Z",
+  "tasks": [
+    {
+      "receivedTime": "2025-04-12T13:02:00.000Z",
+      "jobCategory": "Gases",
+      "fromDepartment": "A+E",
+      "toDepartment": "IAU",
+      "itemType": "Gas Cylinder",
+      "allocatedStaff": "Porter 3",
+      "allocatedTime": "2025-04-12T13:03:00.000Z",
+      "completedTime": "2025-04-12T13:17:00.000Z",
+      "id": "m9e86w31eepyeofqdvf",
+      "status": "Completed"
+    }
+  ],
+  "endTime": "2025-04-12T13:02:25.430Z"
+}

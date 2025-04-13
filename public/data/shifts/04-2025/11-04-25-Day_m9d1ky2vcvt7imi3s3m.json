@@ -1,0 +1,22 @@
+{
+  "id": "m9d1ky2vcvt7imi3s3m",
+  "date": "2025-04-11",
+  "type": "Day",
+  "supervisor": "Supervisor 2",
+  "startTime": "2025-04-11T17:09:28.328Z",
+  "tasks": [
+    {
+      "receivedTime": "2025-04-10T23:45:00.000Z",
+      "jobCategory": "Asset Movement",
+      "fromDepartment": "AMU",
+      "toDepartment": "IAU",
+      "itemType": "Equipment",
+      "allocatedStaff": "Porter 1",
+      "allocatedTime": "2025-04-10T23:50:00.000Z",
+      "completedTime": "2025-04-11T00:30:00.000Z",
+      "id": "m9d1lox51uzgfu06iq1",
+      "status": "Completed"
+    }
+  ],
+  "endTime": "2025-04-11T17:10:41.929Z"
+}

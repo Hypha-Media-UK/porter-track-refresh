@@ -1,0 +1,22 @@
+{
+  "id": "m9d098zk19z6kl2um1m",
+  "date": "2025-04-11",
+  "type": "Day",
+  "supervisor": "Supervisor 2",
+  "startTime": "2025-04-11T16:32:22.977Z",
+  "tasks": [
+    {
+      "receivedTime": "2025-04-13T16:48:00.000Z",
+      "jobCategory": "Gases",
+      "fromDepartment": "IAU",
+      "toDepartment": "A+E",
+      "itemType": "Oxygen Size D",
+      "allocatedStaff": "Porter 2",
+      "allocatedTime": "2025-04-13T07:45:00.000Z",
+      "completedTime": "2025-04-13T08:00:00.000Z",
+      "id": "m9d0a1ivyo7prebf978",
+      "status": "Completed"
+    }
+  ],
+  "endTime": "2025-04-11T16:33:05.603Z"
+}
