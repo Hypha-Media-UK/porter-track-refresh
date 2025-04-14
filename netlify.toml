@@ -1,10 +1,19 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  functions = "netlify/functions"
+  
+[dev]
+  framework = "astro"
+  
+[functions]
+  directory = "netlify/functions"
+  
+# Edge functions configuration is managed by the manifest.json file
 
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/.netlify/functions/entry"
   status = 200
 
 [[headers]]

@@ -15,7 +15,7 @@ import {
 
 // Constants
 const STORAGE_KEY = 'porter-track-shifts';
-const API_BASE = '/api/shifts';
+const API_BASE = '/.netlify/functions/entry/api/shifts';
 
 export const useShiftStore = defineStore('shift', () => {
   // State
@@ -66,7 +66,7 @@ export const useShiftStore = defineStore('shift', () => {
       // Try to load data from API first
       console.log("Loading shift data from API...");
       
-      const response = await fetch('/api/loadShiftData');
+      const response = await fetch('/.netlify/functions/entry/api/loadShiftData');
       if (response.ok) {
         const data = await response.json();
         console.log(`Loaded ${data.length} shifts successfully`);

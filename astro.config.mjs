@@ -28,6 +28,9 @@ export default defineConfig({
     port: 3000
   },
   
+  // Site configuration for Netlify deployment
+  site: 'https://porter-track.netlify.app',
+  
   // Build configuration
   build: {
     format: 'file',

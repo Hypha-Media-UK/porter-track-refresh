@@ -1,11 +1,11 @@
-import { e as createComponent, f as createAstro, h as addAttribute, i as renderHead, j as renderSlot, r as renderTemplate, k as renderComponent, l as renderScript, m as maybeRenderHead } from '../chunks/astro/server_8u5ktLLM.mjs';
+import { e as createAstro, f as createComponent, h as addAttribute, i as renderHead, j as renderSlot, r as renderTemplate, k as renderComponent, l as renderScript, m as maybeRenderHead } from '../chunks/astro/server_C45iyzNA.mjs';
 import 'kleur/colors';
 import 'html-escaper';
 import 'clsx';
 /* empty css                                 */
 export { renderers } from '../renderers.mjs';
 
-const $$Astro = createAstro();
+const $$Astro = createAstro("https://porter-track.netlify.app");
 const $$Layout = createComponent(($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
   Astro2.self = $$Layout;
