@@ -8,8 +8,14 @@
   
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
   
 # Edge functions configuration is managed by the manifest.json file
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/entry/api/:splat"
+  status = 200
 
 [[redirects]]
   from = "/*"
