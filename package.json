@@ -4,16 +4,22 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "./build.sh",
+    "build:astro": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/netlify": "^6.2.6",
     "@astrojs/vue": "^5.0.9",
     "astro": "^5.6.1",
     "date-fns": "^4.1.0",
+    "netlify-cli": "^20.0.0",
     "pinia": "^3.0.2",
     "sass": "^1.86.3",
     "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "terser": "^5.39.0"
   }
 }

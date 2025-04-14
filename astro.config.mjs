@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import vue from '@astrojs/vue';
+import netlify from '@astrojs/netlify';
 
 /**
  * Porter Track - Astro Configuration
@@ -15,6 +16,9 @@ export default defineConfig({
 
   // Set output to server mode to enable API endpoints
   output: 'server',
+  adapter: netlify({
+    edgeMiddleware: true // Enable edge middleware for better performance
+  }),
 
   // Base configuration
   base: '/',

@@ -1,0 +1,22 @@
+{
+  "id": "m9d2l3vb5kmpvi9krgq",
+  "date": "2025-04-11",
+  "type": "Day",
+  "supervisor": "Supervisor 1",
+  "startTime": "2025-04-11T17:37:35.448Z",
+  "tasks": [
+    {
+      "receivedTime": "2025-04-11T00:00:00.000Z",
+      "jobCategory": "Samples",
+      "fromDepartment": "A+E",
+      "toDepartment": "Pathology",
+      "itemType": "Blood",
+      "allocatedStaff": "Porter 3",
+      "allocatedTime": "2025-04-11T00:05:00.000Z",
+      "completedTime": "2025-04-11T01:30:00.000Z",
+      "id": "m9d2lhlenv7k6t0w6go",
+      "status": "Completed"
+    }
+  ],
+  "endTime": "2025-04-11T17:38:03.111Z"
+}

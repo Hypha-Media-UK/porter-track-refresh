@@ -1,78 +1,84 @@
-# Porter Track
+# Porter Track (Astro + Vue)
 
-A modern hospital transportation task management application built with Astro.js and Vue.js.
+A shift tracking application built with Astro and Vue.js, configured for deployment on Netlify.
 
-## Overview
+## Project Overview
 
-Porter Track is designed to help hospital porters and supervisors efficiently manage transportation tasks within a hospital setting. The application provides a streamlined interface for creating, tracking, and completing various types of transportation tasks, such as patient transfers, sample deliveries, and equipment movement.
+This application allows users to track shifts and tasks. It uses:
 
-## Key Features
+- **Astro**: As the framework with server-side rendering
+- **Vue.js**: For interactive components
+- **Pinia**: For state management
+- **date-fns**: For date formatting and manipulation
+- **Netlify**: For deployment with serverless functions
 
-- **Shift Management**: Create and manage Day and Night shifts with supervisor assignment
-- **Task Tracking**: Create, assign, and track transportation tasks throughout the hospital
-- **Real-time Updates**: Monitor pending and completed tasks in real-time
-- **Archived Shifts**: Access historical shift data and task completion records
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
+## Local Development
 
-## Technology Stack
+1. Install dependencies:
+   ```
+   npm install
+   ```
 
-- **Astro.js**: Fast, modern static site generator with excellent Vue.js integration
-- **Vue.js 3**: Progressive JavaScript framework using the Composition API
-- **TypeScript**: Type-safe JavaScript for improved development experience
-- **Pinia**: State management for Vue.js applications
-- **SCSS**: Advanced styling with variables, mixins, and nesting
-- **date-fns**: Modern JavaScript date utility library
+2. Run the development server:
+   ```
+   npm run dev
+   ```
 
-## Architecture Improvements
+3. Preview the production build:
+   ```
+   npm run preview
+   ```
 
-The application has been completely rearchitected with the following improvements:
+## Deployment to Netlify
 
-1. **Component Structure**: Modular components with clear separation of concerns
-2. **Type Safety**: Comprehensive TypeScript interfaces and types
-3. **State Management**: Centralized store with Pinia for predictable state mutations
-4. **API Layer**: RESTful API endpoints for data persistence
-5. **Responsive Design**: Mobile-first approach with responsive UI components
-6. **Performance Optimization**: Lazy-loaded components and efficient data handling
-7. **Code Organization**: Logical file structure with clear naming conventions
+This project is configured for seamless deployment on Netlify using the Astro Netlify adapter.
 
-## Directory Structure
+### Automatic Deployment (Recommended)
 
-```
-porter-track/
-├── public/            # Static assets and data files
-│   ├── data/          # JSON data storage
-│   │   └── shifts/    # Shift and task data
-├── src/               
-│   ├── components/    # Vue components
-│   ├── layouts/       # Astro layout templates
-│   ├── models/        # TypeScript interfaces and types
-│   ├── pages/         # Astro pages and API routes
-│   │   └── api/       # API endpoints
-│   ├── stores/        # Pinia stores
-│   ├── styles/        # Global SCSS files
-│   └── utils/         # Utility functions
-```
+1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket)
+2. Log in to Netlify and click "New site from Git"
+3. Select your repository and configure:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+   - (Netlify will automatically detect the Astro site configuration)
 
-## Running the Application
+### Manual Deployment
 
-```bash
-# Install dependencies
-npm install
+You can also deploy manually using the Netlify CLI:
 
-# Start development server
-npm run dev
+1. Install the Netlify CLI:
+   ```
+   npm install netlify-cli -g
+   ```
 
-# Build for production
-npm run build
+2. Build the project:
+   ```
+   npm run build
+   ```
 
-# Preview production build
-npm run preview
-```
+3. Deploy to Netlify:
+   ```
+   netlify deploy
+   ```
+   
+## Key Configuration Files
+
+- **netlify.toml**: Contains build settings, redirect rules, and function configuration
+- **build.sh**: Custom build script that ensures _redirects file is properly created
+- **astro.config.mjs**: Configured with the Netlify adapter for server-side rendering
 
 ## API Endpoints
 
-- `GET /api/loadShiftData`: Get all shifts
-- `GET /api/shifts/:id`: Get a specific shift
-- `POST /api/shifts`: Create or update a shift
-- `GET /api/shifts/task/:id`: Get a specific task
-- `POST /api/shifts/task`: Create, update or change status of a task
+The application uses server-side API endpoints:
+
+- `/api/loadShiftData`: Loads all shift data 
+- `/api/shifts`: Manages shifts (create, complete)
+- `/api/shifts/task`: Manages tasks within shifts
+
+These endpoints are handled by the Netlify adapter as serverless functions.
+
+## Data Structure
+
+Shift data is stored in JSON files in the `public/data/shifts` directory:
+- Active shift in `current_shift.json`
+- Completed shifts organized by month in `MM-YYYY/` subdirectories
