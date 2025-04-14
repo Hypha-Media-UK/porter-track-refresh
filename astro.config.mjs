@@ -16,7 +16,10 @@ export default defineConfig({
 
   // Set output to server mode to enable API endpoints
   output: 'server',
-  adapter: netlify(),
+  adapter: netlify({
+    // Make sure we can properly handle API routes
+    edgeMiddleware: true
+  }),
 
   // Base configuration
   base: '/',
